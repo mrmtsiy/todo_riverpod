@@ -1,19 +1,19 @@
 // ignore_for_file: use_key_in_widget_constructors, unnecessary_null_comparison, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_app_riverpod/view_model/controller/todo_list_controller.dart';
 import 'package:todo_app_riverpod/model/todo.dart';
 
-class UpsertTodoView extends StatelessWidget {
-  const UpsertTodoView({Key? key}) : super(key: key);
+class TodoEditPage extends StatelessWidget {
+  const TodoEditPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final todo = ModalRoute.of(context)?.settings.arguments as Todo?;
     return Scaffold(
       appBar: AppBar(
-        title: Text(todo != null ? 'Todo${'更新'}' : 'Todo${'作成'}'),
+        title: const Text('TODOの編集'),
       ),
       body: TodoForm(),
     );
@@ -27,6 +27,7 @@ class TodoForm extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final Todo? todo = ModalRoute.of(context)!.settings.arguments as Todo?;
+    final textController = useTextEditingController(text: todo!.title);
     return Form(
       key: _formKey,
       child: Container(
@@ -52,7 +53,7 @@ class TodoForm extends HookConsumerWidget {
             ),
             ElevatedButton(
               onPressed: () => _submission(context, todo, ref),
-              child: Text('Todoを${todo == null ? '作成' : '更新'}する'),
+              child: const Text('Todoを更新する'),
             ),
           ],
         ),
@@ -60,16 +61,15 @@ class TodoForm extends HookConsumerWidget {
     );
   }
 
-  void _submission(BuildContext context, Todo? todo, WidgetRef ref) {
+  void _submission(BuildContext context, Todo todo, WidgetRef ref) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState?.save();
-      if (todo != null) {
-        // viewModelのtodoListを更新
-        ref.read(todoListProvider.notifier).updateTodo(todo.id!, _title!);
-      } else {
-        // viewModelのtodoListを作成
-        ref.read(todoListProvider.notifier).createTodo(_title!);
-      }
+
+      // viewModelのtodoListを更新
+      ref
+          .read(todoListProvider.notifier)
+          .updateTodo(updatedTodo: todo.copyWith(title: _title!));
+
       // 前の画面に戻る
       Navigator.pop(context, '$_title${todo == null ? 'を作成' : 'に更新'}しました');
     }

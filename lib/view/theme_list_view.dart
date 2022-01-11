@@ -12,7 +12,7 @@ class ThemeListView extends HookConsumerWidget {
     final currentThemeMode = ref.watch(themeSelectorProvider);
 
     return ListView.builder(
-      itemCount: ThemeMode.values.length,
+      itemCount: 2,
       itemBuilder: (_, index) {
         final themeMode = ThemeMode.values[index];
         return RadioListTile<ThemeMode>(

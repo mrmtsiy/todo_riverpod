@@ -7,7 +7,6 @@ abstract class BaseTodoRepository {
   Future<String> createTodo({required Todo todo});
   Future<void> updateTodo({required Todo todo});
   Future<void> deleteTodo({required String todoId});
-  Future<void> isDoneTodo({required String todoId});
 }
 
 final todoRepositoryProvider =
@@ -47,10 +46,5 @@ class TodoRepository implements BaseTodoRepository {
         .collection('todos')
         .doc(todo.id)
         .update(todo.toDocument());
-  }
-
-  @override
-  Future<void> isDoneTodo({required String todoId}) async {
-    await _read(firebaseFirestoreProvider).collection('todos').doc(todoId);
   }
 }

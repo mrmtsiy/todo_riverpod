@@ -10,7 +10,7 @@ final themeSelectorProvider = StateNotifierProvider<ThemeSelector, ThemeMode?>(
 
 /// テーマの変更・記憶を行うStateNotifier
 class ThemeSelector extends StateNotifier<ThemeMode> {
-  ThemeSelector(this._reader) : super(ThemeMode.system) {
+  ThemeSelector(this._reader) : super(ThemeMode.light) {
     initialize();
   }
 

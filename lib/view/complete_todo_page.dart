@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:todo_app_riverpod/view_model/controller/todo_list_controller.dart';
-import 'package:todo_app_riverpod/model/todo.dart';
 
 class InCompleteScreen extends StatelessWidget {
   // const InCompleteScreen({Key? key}) : super(key: key);

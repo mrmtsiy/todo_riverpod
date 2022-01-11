@@ -1,7 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors, unnecessary_null_comparison, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_app_riverpod/view_model/controller/todo_list_controller.dart';
 import 'package:todo_app_riverpod/model/todo.dart';
@@ -27,7 +27,7 @@ class TodoForm extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final Todo? todo = ModalRoute.of(context)!.settings.arguments as Todo?;
-    final textController = useTextEditingController(text: todo!.title);
+
     return Form(
       key: _formKey,
       child: Container(
@@ -52,7 +52,7 @@ class TodoForm extends HookConsumerWidget {
               },
             ),
             ElevatedButton(
-              onPressed: () => _submission(context, todo, ref),
+              onPressed: () => _submission(context, todo!, ref),
               child: const Text('Todoを更新する'),
             ),
           ],

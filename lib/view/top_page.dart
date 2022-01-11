@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_app_riverpod/view_model/controller/auth_controller.dart';
 
 import 'package:todo_app_riverpod/view_model/controller/todo_list_controller.dart';
 import 'package:todo_app_riverpod/model/todo.dart';
@@ -20,13 +21,6 @@ class HomeScreen extends HookConsumerWidget {
     final isDoneFilter = todoListFilter.state == TodoListFilter.isDone;
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.settings),
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ThemeSelectionPage()),
-          ),
-        ),
         title: Text('TODO一覧'),
         actions: [
           // チェックしたアイテムの絞り込み
@@ -38,14 +32,51 @@ class HomeScreen extends HookConsumerWidget {
               ))
         ],
       ),
+      drawer: Drawer(
+        child: _drawerList(context, ref),
+      ),
       body: _buildList(ref),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+
         // アイテム登録ダイアログを表示
         onPressed: () => AddTodoDialog.show(context, Todo.empty()),
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
       ),
     );
   }
+}
+
+Widget _drawerList(context, WidgetRef ref) {
+  final authControllerState = ref.watch(authControllerProvider);
+  return ListView(
+    children: <Widget>[
+      DrawerHeader(
+        child: Text(
+          authControllerState!.displayName ?? 'ゲスト様',
+          style: TextStyle(
+            fontSize: 24,
+          ),
+        ),
+      ),
+      ListTile(
+        title: Text('テーマ設定'),
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => ThemeSelectionPage()));
+        },
+      ),
+      ListTile(
+        title: Text('ログアウト'),
+        onTap: () {
+          ref.read(authControllerProvider.notifier).signOut();
+        },
+      ),
+    ],
+  );
 }
 
 Widget _buildList(WidgetRef ref) {

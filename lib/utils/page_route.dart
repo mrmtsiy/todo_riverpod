@@ -41,7 +41,7 @@ class RoutePage extends HookConsumerWidget {
                   color: Colors.black87,
                 ),
                 Icon(
-                  Icons.check,
+                  Icons.calendar_today,
                   color: Colors.black,
                 ),
               ],
@@ -61,7 +61,7 @@ class RoutePage extends HookConsumerWidget {
                   color: Colors.white,
                 ),
                 Icon(
-                  Icons.check,
+                  Icons.calendar_today,
                   color: Colors.white,
                 ),
               ],

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_app_riverpod/utils/general_providers.dart';
@@ -12,6 +13,9 @@ abstract class BaseAuthRepository {
   User? getCurrentUser();
   // ログアウト
   Future<void> signOut();
+  Future<void> signUp(
+      {required String mail, required String password, required String name});
+  Future<void> signIn({required String mail, required String password});
 }
 
 // AuthRepositoryを提供し、ref.readを渡してアクセスできるようにする
@@ -46,6 +50,41 @@ class AuthRepository implements BaseAuthRepository {
   @override
   Future<void> signOut() async {
     await _read(firebaseAuthProvider).signOut();
-    await signInAnonymously();
+  }
+
+  @override
+  Future<void> signIn({required String mail, required String password}) async {
+    if (mail.isEmpty) {
+      throw 'メールアドレスを入力して下さい';
+    }
+    if (password.isEmpty) {
+      throw 'パスワードを入力して下さい';
+    }
+    final userInfo = await _read(firebaseAuthProvider)
+        .signInWithEmailAndPassword(email: mail, password: password);
+    final uid = userInfo.user!.uid;
+  }
+
+  @override
+  Future<void> signUp(
+      {required String mail,
+      required String password,
+      required String name}) async {
+    if (mail.isEmpty) {
+      throw 'メールアドレスを入力して下さい';
+    }
+    if (password.isEmpty) {
+      throw 'パスワードを入力して下さい';
+    }
+    final UserCredential result = await _read(firebaseAuthProvider)
+        .createUserWithEmailAndPassword(email: mail, password: password);
+    final email = result.user!.email;
+
+    await _read(firebaseFirestoreProvider).collection('users').add({
+      'displayName': name,
+      'email': email,
+      'password': password,
+      'createAt': Timestamp.now(),
+    });
   }
 }

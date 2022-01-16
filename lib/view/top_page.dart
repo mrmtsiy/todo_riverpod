@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_app_riverpod/repositories/auth_repository.dart';
+import 'package:todo_app_riverpod/view/signin_page.dart';
+import 'package:todo_app_riverpod/view/signup_page.dart';
 import 'package:todo_app_riverpod/view_model/controller/auth_controller.dart';
 
 import 'package:todo_app_riverpod/view_model/controller/todo_list_controller.dart';
@@ -19,6 +22,7 @@ class HomeScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final todoListFilter = ref.watch(todoListFilterProvider.state);
     final isDoneFilter = todoListFilter.state == TodoListFilter.isDone;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('TODO一覧'),
@@ -51,7 +55,9 @@ class HomeScreen extends HookConsumerWidget {
 }
 
 Widget _drawerList(context, WidgetRef ref) {
+  String _infoText = '';
   final authControllerState = ref.watch(authControllerProvider);
+  final user = ref.read(authRepositoryProvider).getCurrentUser();
   return ListView(
     children: <Widget>[
       DrawerHeader(
@@ -70,10 +76,59 @@ Widget _drawerList(context, WidgetRef ref) {
         },
       ),
       ListTile(
-        title: Text('ログアウト'),
+        title: Text('新規登録'),
         onTap: () {
-          ref.read(authControllerProvider.notifier).signOut();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SignUpPage(),
+            ),
+          );
         },
+      ),
+      user == null
+          ? ListTile(
+              title: Text('ログイン'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SignInPage(),
+                  ),
+                );
+              },
+            )
+          : SizedBox(),
+      ListTile(
+        title: Text('ログアウト'),
+        onTap: () async {
+          try {
+            ref.read(authControllerProvider.notifier).signOut();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SignInPage(),
+              ),
+            );
+            _infoText = 'ログアウトしました';
+            final snackBar = SnackBar(
+                backgroundColor: Colors.black12,
+                content: Text(
+                  _infoText,
+                  textAlign: TextAlign.center,
+                ));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          } catch (e) {
+            e.toString();
+          }
+        },
+      ),
+      ListTile(
+        title: Text(
+          'アカウントの削除',
+          style: TextStyle(color: Colors.red),
+        ),
+        onTap: () {},
       ),
     ],
   );
@@ -86,7 +141,7 @@ Widget _buildList(WidgetRef ref) {
     data: (items) => items.isEmpty
         ? Center(
             child: Text(
-              'Tap + to add an item',
+              '全てのタスクが完了しました',
               style: TextStyle(fontSize: 20.0),
             ),
           )
@@ -153,12 +208,31 @@ Widget _todoItem(Todo todo, BuildContext context, WidgetRef ref) {
         checkColor: Colors.black,
         activeColor: Colors.white,
       ),
-      title: Text(
-        todo.title,
-        style: const TextStyle(
-          fontSize: 16,
-        ),
-      ),
+      title: todo.isDone == true
+          ? Opacity(
+              opacity: 0.3,
+              child: Text(
+                todo.title,
+                style: TextStyle(
+                  fontSize: 16,
+                  decoration: todo.isDone == true
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                ),
+              ),
+            )
+          : Opacity(
+              opacity: 1.0,
+              child: Text(
+                todo.title,
+                style: TextStyle(
+                  fontSize: 16,
+                  decoration: todo.isDone == true
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                ),
+              ),
+            ),
       onTap: () => _transitionToNextScreen(context, todo: todo),
     ),
   );

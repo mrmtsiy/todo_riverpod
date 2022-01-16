@@ -1,8 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_app_riverpod/view/signin_page.dart';
 import 'package:todo_app_riverpod/view/todo_edit_page.dart';
 import 'package:todo_app_riverpod/view_model/controller/theme_controller.dart';
 import 'package:todo_app_riverpod/utils/dark_theme.dart';
@@ -30,7 +32,19 @@ class MyApp extends HookConsumerWidget {
       routes: <String, WidgetBuilder>{
         Const.routeNameUpsertTodo: (BuildContext context) => TodoEditPage(),
       },
-      home: RoutePage(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasData) {
+            return RoutePage();
+          } else {
+            return SignInPage();
+          }
+        },
+      ),
     );
   }
 }

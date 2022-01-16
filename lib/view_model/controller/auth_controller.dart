@@ -1,32 +1,23 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_app_riverpod/repositories/auth_repository.dart';
 
 final authControllerProvider = StateNotifierProvider<AuthController, User?>(
-  (ref) => AuthController(ref.read)..appStarted(),
+  (ref) => AuthController(
+    ref.read,
+    initialUser: ref.read(authRepositoryProvider).getCurrentUser(),
+  )..appStarted(),
 );
 
 class AuthController extends StateNotifier<User?> {
   final Reader _read;
+  final _auth = FirebaseAuth.instance;
 
-  StreamSubscription<User?>? _authStateChangesSubscription;
-
-  AuthController(this._read) : super(null) {
-    // 受信停止
-    _authStateChangesSubscription?.cancel();
-    // 受信開始
-    _authStateChangesSubscription = _read(authRepositoryProvider)
-        .authStateChanges
-        .listen((user) => state = user);
-  }
-
-  // 不要な受信をキャンセルするためにdisposeでキャンセルする
-  @override
-  void dispose() {
-    _authStateChangesSubscription?.cancel();
-    super.dispose();
+  AuthController(this._read, {User? initialUser}) : super(initialUser) {
+    // Userの変更を検知して状態を更新
+    _auth.userChanges().listen((user) {
+      state = user;
+    });
   }
 
   //アプリ開始
@@ -34,14 +25,20 @@ class AuthController extends StateNotifier<User?> {
     //Currentユーザを取得
     final user = _read(authRepositoryProvider).getCurrentUser();
     // ログインされていなければ、匿名でサインインしてログインさせる。
-    if (user == null) {
-      await _read(authRepositoryProvider).signInAnonymously();
-    }
   }
 
   // サインアウト
   void signOut() async {
     // サインアウトメソッド
     await _read(authRepositoryProvider).signOut();
+  }
+
+  Future<void> signIn(String mail, String password) async {
+    await _read(authRepositoryProvider).signIn(mail: mail, password: password);
+  }
+
+  Future<void> signUp(String mail, String password, String name) async {
+    await _read(authRepositoryProvider)
+        .signUp(mail: mail, password: password, name: name);
   }
 }

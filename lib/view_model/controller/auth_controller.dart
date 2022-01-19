@@ -28,7 +28,7 @@ class AuthController extends StateNotifier<User?> {
   }
 
   // サインアウト
-  void signOut() async {
+  Future<void> signOut() async {
     // サインアウトメソッド
     await _read(authRepositoryProvider).signOut();
   }

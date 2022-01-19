@@ -1,9 +1,9 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:todo_app_riverpod/utils/general_providers.dart';
 import 'package:todo_app_riverpod/view/signin_page.dart';
 import 'package:todo_app_riverpod/view/todo_edit_page.dart';
 import 'package:todo_app_riverpod/view_model/controller/theme_controller.dart';
@@ -16,7 +16,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   // await SharedPrefs.setInstance();
-  runApp(ProviderScope(child: MyApp()));
+  //カレンダーを日本語表記にするために'initializeDateFormatting().then((_) =>'
+  initializeDateFormatting().then((_) => runApp(ProviderScope(child: MyApp())));
 }
 
 class MyApp extends HookConsumerWidget {
@@ -33,7 +34,7 @@ class MyApp extends HookConsumerWidget {
         Const.routeNameUpsertTodo: (BuildContext context) => TodoEditPage(),
       },
       home: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
+        stream: ref.watch(firebaseAuthProvider).authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());

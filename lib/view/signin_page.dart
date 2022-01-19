@@ -8,7 +8,6 @@ import 'package:todo_app_riverpod/utils/custom_text_style.dart';
 import 'package:todo_app_riverpod/utils/loading_page.dart';
 import 'package:todo_app_riverpod/utils/page_route.dart';
 import 'package:todo_app_riverpod/view/signup_page.dart';
-import 'package:todo_app_riverpod/view/top_page.dart';
 import 'package:todo_app_riverpod/view_model/controller/auth_controller.dart';
 
 class SignInPage extends HookConsumerWidget {
@@ -65,6 +64,7 @@ class SignInPage extends HookConsumerWidget {
                           ),
                           Expanded(
                             child: TextFormField(
+                              cursorColor: Colors.white,
                               controller: mailController,
                               decoration: InputDecoration.collapsed(
                                 hintText: 'メールアドレス',
@@ -102,6 +102,7 @@ class SignInPage extends HookConsumerWidget {
                           ),
                           Expanded(
                             child: TextFormField(
+                              cursorColor: Colors.white,
                               obscureText: true,
                               controller: passwordController,
                               decoration: InputDecoration.collapsed(
@@ -157,11 +158,10 @@ class SignInPage extends HookConsumerWidget {
                             );
                             _infoText = 'ログインしました';
                             final snackBar = SnackBar(
-                                backgroundColor: Colors.black12,
                                 content: Text(
-                                  _infoText,
-                                  textAlign: TextAlign.center,
-                                ));
+                              _infoText,
+                              textAlign: TextAlign.center,
+                            ));
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(snackBar);
                           } catch (e) {

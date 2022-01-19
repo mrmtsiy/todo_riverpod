@@ -62,7 +62,6 @@ class AuthRepository implements BaseAuthRepository {
     }
     final userInfo = await _read(firebaseAuthProvider)
         .signInWithEmailAndPassword(email: mail, password: password);
-    final uid = userInfo.user!.uid;
   }
 
   @override
@@ -79,12 +78,15 @@ class AuthRepository implements BaseAuthRepository {
     final UserCredential result = await _read(firebaseAuthProvider)
         .createUserWithEmailAndPassword(email: mail, password: password);
     final email = result.user!.email;
-
-    await _read(firebaseFirestoreProvider).collection('users').add({
+    final userId = result.user!.uid;
+    await _read(firebaseFirestoreProvider).collection('users').doc(userId).set({
       'displayName': name,
       'email': email,
       'password': password,
       'createAt': Timestamp.now(),
     });
+
+    //displayNameを新規登録時に更新
+    await result.user!.updateDisplayName(name);
   }
 }

@@ -62,7 +62,7 @@ Widget _drawerList(context, WidgetRef ref) {
     children: <Widget>[
       DrawerHeader(
         child: Text(
-          authControllerState!.displayName ?? 'ゲスト様',
+          authControllerState!.displayName ?? '',
           style: TextStyle(
             fontSize: 24,
           ),
@@ -103,7 +103,7 @@ Widget _drawerList(context, WidgetRef ref) {
         title: Text('ログアウト'),
         onTap: () async {
           try {
-            ref.read(authControllerProvider.notifier).signOut();
+            await ref.read(authControllerProvider.notifier).signOut();
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -112,11 +112,10 @@ Widget _drawerList(context, WidgetRef ref) {
             );
             _infoText = 'ログアウトしました';
             final snackBar = SnackBar(
-                backgroundColor: Colors.black12,
                 content: Text(
-                  _infoText,
-                  textAlign: TextAlign.center,
-                ));
+              _infoText,
+              textAlign: TextAlign.center,
+            ));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           } catch (e) {
             e.toString();
@@ -310,23 +309,26 @@ class AddTodoDialog extends HookConsumerWidget {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    primary: isUpdating
-                        ? Colors.orange
-                        : Theme.of(context).primaryColor),
+                    primary: Theme.of(context).primaryColor),
                 onPressed: () {
-                  isUpdating
-                      ? ref.read(todoListProvider.notifier).updateTodo(
-                            updatedTodo: todo.copyWith(
-                              title: textController.text.trim(),
-                              isDone: todo.isDone,
-                            ),
-                          )
-                      : ref
-                          .read(todoListProvider.notifier)
-                          .createTodo(title: textController.text.trim());
-                  Navigator.of(context).pop();
+                  if (textController.text.isNotEmpty) {
+                    ref
+                        .read(todoListProvider.notifier)
+                        .createTodo(title: textController.text.trim());
+                    Navigator.of(context).pop();
+                  } else {
+                    Navigator.of(context).pop();
+                    final snackBar = SnackBar(
+                        backgroundColor: Colors.red[300],
+                        content: Text(
+                          'Todoを入力して下さい',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
                 },
-                child: Text(isUpdating ? 'Update' : 'Add'),
+                child: Text('Add'),
               ),
             )
           ],

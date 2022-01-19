@@ -9,7 +9,6 @@ import 'package:todo_app_riverpod/utils/custom_text_style.dart';
 import 'package:todo_app_riverpod/utils/loading_page.dart';
 import 'package:todo_app_riverpod/utils/page_route.dart';
 import 'package:todo_app_riverpod/view/signin_page.dart';
-import 'package:todo_app_riverpod/view/top_page.dart';
 import 'package:todo_app_riverpod/view_model/controller/auth_controller.dart';
 
 class SignUpPage extends HookConsumerWidget {
@@ -74,6 +73,7 @@ class SignUpPage extends HookConsumerWidget {
                     ),
                     Expanded(
                       child: TextFormField(
+                        cursorColor: Colors.white,
                         controller: nameController,
                         decoration: InputDecoration.collapsed(
                           hintText: 'アカウント名',
@@ -111,6 +111,7 @@ class SignUpPage extends HookConsumerWidget {
                     ),
                     Expanded(
                       child: TextFormField(
+                        cursorColor: Colors.white,
                         controller: mailController,
                         decoration: InputDecoration.collapsed(
                           hintText: 'メールアドレス',
@@ -153,6 +154,7 @@ class SignUpPage extends HookConsumerWidget {
                     ),
                     Expanded(
                       child: TextFormField(
+                        cursorColor: Colors.white,
                         obscureText: true,
                         maxLength: 20,
                         controller: passwordController,
@@ -197,7 +199,7 @@ class SignUpPage extends HookConsumerWidget {
                         );
                         _infoText = 'Todoアプリへようこそ';
                         final snackBar = SnackBar(
-                            backgroundColor: Colors.black12,
+                            backgroundColor: Colors.white,
                             content: Text(
                               _infoText,
                               textAlign: TextAlign.center,
@@ -256,8 +258,10 @@ class SignUpPage extends HookConsumerWidget {
                       );
                       _infoText = 'ゲストログインしました';
                       final snackBar = SnackBar(
-                          backgroundColor: Colors.black12,
-                          content: Text(_infoText));
+                          backgroundColor: Colors.white,
+                          content: Text(
+                            _infoText,
+                          ));
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     } catch (e) {}
                   },

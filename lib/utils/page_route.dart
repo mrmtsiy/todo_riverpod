@@ -3,7 +3,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:todo_app_riverpod/view/complete_todo_page.dart';
+import 'package:todo_app_riverpod/view/calendar_page.dart';
 import 'package:todo_app_riverpod/view/top_page.dart';
 import 'package:todo_app_riverpod/view_model/controller/theme_controller.dart';
 
@@ -21,7 +21,7 @@ class RoutePage extends HookConsumerWidget {
     final tabType = ref.watch(tabTypeProvider.state);
     final _screens = [
       const HomeScreen(),
-      const InCompleteScreen(),
+      CalendarScreen(),
     ];
     return Scaffold(
       body: _screens[tabType.state.index],

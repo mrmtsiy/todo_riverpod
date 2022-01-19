@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 class Authentication_error {
   // ログイン時の日本語エラーメッセージ
   // ignore: non_constant_identifier_names

@@ -21,10 +21,19 @@ Todo _$TodoFromJson(Map<String, dynamic> json) {
 class _$TodoTearOff {
   const _$TodoTearOff();
 
-  _Todo call({required String title, String? id, bool isDone = false}) {
+  _Todo call(
+      {required String title,
+      String? dateYM,
+      String? dateYMD,
+      String? id,
+      DateTime? limit,
+      bool isDone = false}) {
     return _Todo(
       title: title,
+      dateYM: dateYM,
+      dateYMD: dateYMD,
       id: id,
+      limit: limit,
       isDone: isDone,
     );
   }
@@ -40,7 +49,10 @@ const $Todo = _$TodoTearOff();
 /// @nodoc
 mixin _$Todo {
   String get title => throw _privateConstructorUsedError;
+  String? get dateYM => throw _privateConstructorUsedError;
+  String? get dateYMD => throw _privateConstructorUsedError;
   String? get id => throw _privateConstructorUsedError;
+  DateTime? get limit => throw _privateConstructorUsedError;
   bool get isDone => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -52,7 +64,13 @@ mixin _$Todo {
 abstract class $TodoCopyWith<$Res> {
   factory $TodoCopyWith(Todo value, $Res Function(Todo) then) =
       _$TodoCopyWithImpl<$Res>;
-  $Res call({String title, String? id, bool isDone});
+  $Res call(
+      {String title,
+      String? dateYM,
+      String? dateYMD,
+      String? id,
+      DateTime? limit,
+      bool isDone});
 }
 
 /// @nodoc
@@ -66,7 +84,10 @@ class _$TodoCopyWithImpl<$Res> implements $TodoCopyWith<$Res> {
   @override
   $Res call({
     Object? title = freezed,
+    Object? dateYM = freezed,
+    Object? dateYMD = freezed,
     Object? id = freezed,
+    Object? limit = freezed,
     Object? isDone = freezed,
   }) {
     return _then(_value.copyWith(
@@ -74,10 +95,22 @@ class _$TodoCopyWithImpl<$Res> implements $TodoCopyWith<$Res> {
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
+      dateYM: dateYM == freezed
+          ? _value.dateYM
+          : dateYM // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dateYMD: dateYMD == freezed
+          ? _value.dateYMD
+          : dateYMD // ignore: cast_nullable_to_non_nullable
+              as String?,
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
+      limit: limit == freezed
+          ? _value.limit
+          : limit // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       isDone: isDone == freezed
           ? _value.isDone
           : isDone // ignore: cast_nullable_to_non_nullable
@@ -91,7 +124,13 @@ abstract class _$TodoCopyWith<$Res> implements $TodoCopyWith<$Res> {
   factory _$TodoCopyWith(_Todo value, $Res Function(_Todo) then) =
       __$TodoCopyWithImpl<$Res>;
   @override
-  $Res call({String title, String? id, bool isDone});
+  $Res call(
+      {String title,
+      String? dateYM,
+      String? dateYMD,
+      String? id,
+      DateTime? limit,
+      bool isDone});
 }
 
 /// @nodoc
@@ -106,7 +145,10 @@ class __$TodoCopyWithImpl<$Res> extends _$TodoCopyWithImpl<$Res>
   @override
   $Res call({
     Object? title = freezed,
+    Object? dateYM = freezed,
+    Object? dateYMD = freezed,
     Object? id = freezed,
+    Object? limit = freezed,
     Object? isDone = freezed,
   }) {
     return _then(_Todo(
@@ -114,10 +156,22 @@ class __$TodoCopyWithImpl<$Res> extends _$TodoCopyWithImpl<$Res>
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
+      dateYM: dateYM == freezed
+          ? _value.dateYM
+          : dateYM // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dateYMD: dateYMD == freezed
+          ? _value.dateYMD
+          : dateYMD // ignore: cast_nullable_to_non_nullable
+              as String?,
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
+      limit: limit == freezed
+          ? _value.limit
+          : limit // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       isDone: isDone == freezed
           ? _value.isDone
           : isDone // ignore: cast_nullable_to_non_nullable
@@ -129,7 +183,13 @@ class __$TodoCopyWithImpl<$Res> extends _$TodoCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_Todo extends _Todo {
-  const _$_Todo({required this.title, this.id, this.isDone = false})
+  const _$_Todo(
+      {required this.title,
+      this.dateYM,
+      this.dateYMD,
+      this.id,
+      this.limit,
+      this.isDone = false})
       : super._();
 
   factory _$_Todo.fromJson(Map<String, dynamic> json) => _$$_TodoFromJson(json);
@@ -137,14 +197,20 @@ class _$_Todo extends _Todo {
   @override
   final String title;
   @override
+  final String? dateYM;
+  @override
+  final String? dateYMD;
+  @override
   final String? id;
+  @override
+  final DateTime? limit;
   @JsonKey()
   @override
   final bool isDone;
 
   @override
   String toString() {
-    return 'Todo(title: $title, id: $id, isDone: $isDone)';
+    return 'Todo(title: $title, dateYM: $dateYM, dateYMD: $dateYMD, id: $id, limit: $limit, isDone: $isDone)';
   }
 
   @override
@@ -153,7 +219,10 @@ class _$_Todo extends _Todo {
         (other.runtimeType == runtimeType &&
             other is _Todo &&
             const DeepCollectionEquality().equals(other.title, title) &&
+            const DeepCollectionEquality().equals(other.dateYM, dateYM) &&
+            const DeepCollectionEquality().equals(other.dateYMD, dateYMD) &&
             const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality().equals(other.limit, limit) &&
             const DeepCollectionEquality().equals(other.isDone, isDone));
   }
 
@@ -161,7 +230,10 @@ class _$_Todo extends _Todo {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(title),
+      const DeepCollectionEquality().hash(dateYM),
+      const DeepCollectionEquality().hash(dateYMD),
       const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(limit),
       const DeepCollectionEquality().hash(isDone));
 
   @JsonKey(ignore: true)
@@ -176,8 +248,13 @@ class _$_Todo extends _Todo {
 }
 
 abstract class _Todo extends Todo {
-  const factory _Todo({required String title, String? id, bool isDone}) =
-      _$_Todo;
+  const factory _Todo(
+      {required String title,
+      String? dateYM,
+      String? dateYMD,
+      String? id,
+      DateTime? limit,
+      bool isDone}) = _$_Todo;
   const _Todo._() : super._();
 
   factory _Todo.fromJson(Map<String, dynamic> json) = _$_Todo.fromJson;
@@ -185,7 +262,13 @@ abstract class _Todo extends Todo {
   @override
   String get title;
   @override
+  String? get dateYM;
+  @override
+  String? get dateYMD;
+  @override
   String? get id;
+  @override
+  DateTime? get limit;
   @override
   bool get isDone;
   @override

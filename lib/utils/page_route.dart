@@ -21,7 +21,7 @@ class RoutePage extends HookConsumerWidget {
     final tabType = ref.watch(tabTypeProvider.state);
     final _screens = [
       const HomeScreen(),
-      CalendarScreen(),
+      const CalendarScreen(),
     ];
     return Scaffold(
       body: _screens[tabType.state.index],

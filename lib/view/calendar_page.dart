@@ -3,43 +3,27 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:todo_app_riverpod/model/todo.dart';
+import 'package:todo_app_riverpod/view_model/controller/calendar_controller.dart';
 
-class CalendarScreen extends StatefulWidget {
+class CalendarScreen extends HookConsumerWidget {
   const CalendarScreen({Key? key}) : super(key: key);
 
   @override
-  _CalendarScreenState createState() => _CalendarScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final calendarState = ref.watch(calendarProvider);
+    final calendarAction = ref.read(calendarProvider.notifier);
 
-class _CalendarScreenState extends State<CalendarScreen> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
-  Map<DateTime, List> _eventsList = {};
-
-  int getHashCode(DateTime key) {
-    return key.day * 1000000 + key.month * 10000 + key.year;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedDay = _focusedDay;
-    //サンプルのイベントリスト
-    _eventsList = {};
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final _events = LinkedHashMap<DateTime, List>(
-      equals: isSameDay,
-      hashCode: getHashCode,
-    )..addAll(_eventsList);
-
-    List getEventForDay(DateTime day) {
-      return _events[day] ?? [];
-    }
+    useEffect(() {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        calendarAction.syncSchedules(DateTime.now()).then((err) {
+          return;
+        });
+      });
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -51,30 +35,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
             locale: 'ja_JP',
             firstDay: DateTime.utc(2020, 1, 1),
             lastDay: DateTime.utc(2030, 12, 31),
-            focusedDay: _focusedDay,
-            eventLoader: getEventForDay, //追記
-            calendarFormat: _calendarFormat,
-            onFormatChanged: (format) {
-              if (_calendarFormat != format) {
-                setState(() {
-                  _calendarFormat = format;
-                });
-              }
-            },
+            focusedDay: calendarState.focusedDay,
+            headerStyle: HeaderStyle(
+              formatButtonVisible: false,
+            ),
+            eventLoader:
+                EventMaker(schedules: calendarState.events).getLoader(),
+
             selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
+              return isSameDay(calendarState.selectedDay, day);
             },
             onDaySelected: (selectedDay, focusedDay) {
-              if (!isSameDay(_selectedDay, selectedDay)) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-                getEventForDay(selectedDay);
+              if (!isSameDay(calendarState.selectedDay, selectedDay)) {
+                calendarAction.selectDay(selectedDay);
               }
             },
             onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
+              calendarAction.onPageChange(focusedDay);
+              calendarAction.syncSchedules(focusedDay);
             },
 
             //バッジのUIを数字に変更
@@ -86,23 +64,28 @@ class _CalendarScreenState extends State<CalendarScreen> {
               },
             ),
           ),
-          ListView(
-            shrinkWrap: true,
-            children: getEventForDay(_selectedDay!)
-                .map(
-                  (event) => Container(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(width: 1, color: Colors.grey),
-                      ),
-                    ),
-                    child: ListTile(
-                      title: Text(event.toString()),
-                    ),
-                  ),
-                )
-                .toList(),
-          )
+          // Expanded(
+          //   child: ListView.builder(
+          //     itemCount: calendarState.schedulesInDay()!.length,
+          //     itemBuilder: (BuildContext context, int index) {
+          //       final Todo? schedule = calendarState.schedulesInDay()![index];
+          //       return Container(
+          //         child: Flexible(
+          //           child: Text(schedule?.title ?? '',
+          //               style: ThemeData.dark().textTheme.bodyText1),
+          //         ),
+          //         decoration: BoxDecoration(
+          //           border: Border(
+          //             bottom: BorderSide(
+          //               color: ThemeData.dark().dividerColor,
+          //               width: 1.0,
+          //             ),
+          //           ),
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // ),
         ],
       ),
     );
@@ -132,4 +115,38 @@ Widget _buildEventsMarker(DateTime date, List events) {
       ),
     ),
   );
+}
+
+typedef EventLoader = List<dynamic> Function(DateTime day);
+
+class EventMaker {
+  final List<Todo> schedules;
+
+  EventMaker({required this.schedules});
+
+  int _getHashCode(DateTime key) {
+    return key.day * 1000000 + key.month * 10000 + key.year;
+  }
+
+  EventLoader getLoader() {
+    final events = LinkedHashMap<DateTime, List>(
+      equals: isSameDay,
+      hashCode: _getHashCode,
+    );
+
+    Map<DateTime, List<Todo>> _eventsList = {};
+    for (var schedule in schedules) {
+      if (_eventsList.containsKey(schedule.date())) {
+        _eventsList[schedule.date()]!.add(schedule);
+      } else {
+        _eventsList[schedule.date()!] = [schedule];
+      }
+    }
+
+    events.addAll(_eventsList);
+
+    return (DateTime day) {
+      return events[day] ?? [];
+    };
+  }
 }

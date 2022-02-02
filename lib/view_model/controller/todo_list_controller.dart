@@ -58,8 +58,9 @@ class TodoListController extends StateNotifier<AsyncValue<List<Todo>>> {
     }
   }
 
-  Future<void> createTodo({required String title, bool isDone = false}) async {
-    final todo = Todo(title: title, isDone: isDone);
+  Future<void> createTodo(
+      {required String title, bool isDone = false, DateTime? limit}) async {
+    final todo = Todo(title: title, isDone: isDone, limit: limit);
     final todoId = await _read(todoRepositoryProvider)
         .createTodo(userId: _userId!, todo: todo);
     state.whenData(

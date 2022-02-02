@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:intl/intl.dart';
 
 part 'todo.freezed.dart';
 part 'todo.g.dart';
@@ -10,7 +11,10 @@ abstract class Todo implements _$Todo {
   const Todo._();
   const factory Todo({
     required String title,
+    String? dateYM,
+    String? dateYMD,
     String? id,
+    DateTime? limit,
     @Default(false) bool isDone,
   }) = _Todo;
 
@@ -25,4 +29,12 @@ abstract class Todo implements _$Todo {
   }
   // アイテムモデルをMap<String, dynamic>に変換するメソッド
   Map<String, dynamic> toDocument() => toJson()..remove('id');
+
+  DateTime? date() {
+    return DateTime.parse(dateYMD!);
+  }
+
+  String? dateDisplayText() {
+    return DateFormat('MM月dd日', "ja_JP").format(date()!);
+  }
 }

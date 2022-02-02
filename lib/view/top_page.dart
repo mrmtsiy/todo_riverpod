@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:todo_app_riverpod/repositories/auth_repository.dart';
 import 'package:todo_app_riverpod/view/signin_page.dart';
 import 'package:todo_app_riverpod/view/signup_page.dart';
 import 'package:todo_app_riverpod/view_model/controller/auth_controller.dart';
+import 'package:todo_app_riverpod/view_model/controller/time_limit_controller.dart';
 
 import 'package:todo_app_riverpod/view_model/controller/todo_list_controller.dart';
 import 'package:todo_app_riverpod/model/todo.dart';
@@ -291,6 +293,7 @@ class AddTodoDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textController = useTextEditingController(text: todo.title);
+    final limitTime = ref.watch(todoLimitProvider);
     return Dialog(
       child: Padding(
         padding: EdgeInsets.all(20.0),
@@ -303,7 +306,26 @@ class AddTodoDialog extends HookConsumerWidget {
               decoration: InputDecoration(hintText: 'Item Name'),
             ),
             SizedBox(
-              height: 12.0,
+              height: 18.0,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 200,
+                  child: limitTime.limit != null
+                      ? Text(DateFormat('yyyy年MM月dd日').format(limitTime.limit!))
+                      : Text(
+                          '目標達成日を設定する',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    ref.read(todoLimitProvider.notifier).selectDate(context);
+                  },
+                  child: Text('日付選択'),
+                ),
+              ],
             ),
             SizedBox(
               width: double.infinity,
@@ -312,9 +334,9 @@ class AddTodoDialog extends HookConsumerWidget {
                     primary: Theme.of(context).primaryColor),
                 onPressed: () {
                   if (textController.text.isNotEmpty) {
-                    ref
-                        .read(todoListProvider.notifier)
-                        .createTodo(title: textController.text.trim());
+                    ref.read(todoListProvider.notifier).createTodo(
+                        title: textController.text.trim(),
+                        limit: limitTime.limit);
                     Navigator.of(context).pop();
                   } else {
                     Navigator.of(context).pop();

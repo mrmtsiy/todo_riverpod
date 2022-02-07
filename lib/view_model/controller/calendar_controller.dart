@@ -13,12 +13,12 @@ final calendarProvider =
 
 CalendarFormat? _calendarFormat;
 
-int getHashCode(DateTime key) {
-  return key.day * 1000000 + key.month * 10000 + key.year;
-}
-
 class CalendarController extends StateNotifier<Calendar> {
-  CalendarController(this._read) : super(Calendar(focusedDay: DateTime.now()));
+  CalendarController(this._read)
+      : super(Calendar(
+            events: [],
+            selectedDay: DateTime.now(),
+            focusedDay: DateTime.now()));
 
   final Reader _read;
 
@@ -36,38 +36,24 @@ class CalendarController extends StateNotifier<Calendar> {
     state = state.copyWith(focusedDay: focusedDay);
   }
 
-  // Stream<List<Todo>?> getEventStream(DateTime? dateTime) {
-  //   return _read(firebaseFirestoreProvider)
-  //       .collection('users')
-  //       .doc(_read(firebaseAuthProvider).currentUser?.uid)
-  //       .collection('todosList')
-  //       .where('limit', isEqualTo: dateTime)
-  //       .snapshots()
-  //       .map((snapshot) => snapshot.docs
-  //           .map(
-  //             (document) => Calendar.fromFirestore(
-  //               document.data(),
-  //             ),
-  //           )
-  //           .toList() as List<Todo>);
-  // }
-
   Future<AppError?> syncSchedules(DateTime dt) async {
-    final dateYM = DateFormat('yyyy-MM', "ja_JP").format(dt);
+    final dateYM = DateFormat('yyyy-MM-D', "ja_JP").format(dt);
     final loginId = _read(firebaseAuthProvider).currentUser!.uid;
 
-    state = state.setSchedulesInMonth([])!;
+    state = state.setSchedulesInMonth([]);
 
     try {
-      final ref = FirebaseFirestore.instance
+      final ref = await FirebaseFirestore.instance
           .collection('users')
           .doc(loginId)
           .collection('todosList')
-          .where('limit', isEqualTo: dateYM);
-      final snapshots = await ref.orderBy("limit").get();
+          // .where('dateYM', isEqualTo: dateYM)
+          .get();
+
       final schedules =
-          snapshots.docs.map((snap) => Todo.fromJson(snap.data())).toList();
-      state = state.setSchedulesInMonth(schedules)!;
+          ref.docs.map((snap) => Todo.fromJson(snap.data())).toList();
+
+      state = state.setSchedulesInMonth(schedules);
     } catch (e) {
       return AppError("エラーが発生しました");
     }

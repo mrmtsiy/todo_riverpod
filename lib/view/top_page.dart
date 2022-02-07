@@ -64,7 +64,7 @@ Widget _drawerList(context, WidgetRef ref) {
     children: <Widget>[
       DrawerHeader(
         child: Text(
-          authControllerState!.displayName ?? '',
+          authControllerState!.displayName ?? authControllerState.uid,
           style: TextStyle(
             fontSize: 24,
           ),

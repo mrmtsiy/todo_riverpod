@@ -24,13 +24,11 @@ class _$CalendarTearOff {
   _Calendar call(
       {required DateTime focusedDay,
       DateTime? selectedDay,
-      List<Todo> events = const <Todo>[],
-      DateTime? limit}) {
+      List<Todo> events = const <Todo>[]}) {
     return _Calendar(
       focusedDay: focusedDay,
       selectedDay: selectedDay,
       events: events,
-      limit: limit,
     );
   }
 
@@ -47,7 +45,6 @@ mixin _$Calendar {
   DateTime get focusedDay => throw _privateConstructorUsedError;
   DateTime? get selectedDay => throw _privateConstructorUsedError;
   List<Todo> get events => throw _privateConstructorUsedError;
-  DateTime? get limit => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -59,11 +56,7 @@ mixin _$Calendar {
 abstract class $CalendarCopyWith<$Res> {
   factory $CalendarCopyWith(Calendar value, $Res Function(Calendar) then) =
       _$CalendarCopyWithImpl<$Res>;
-  $Res call(
-      {DateTime focusedDay,
-      DateTime? selectedDay,
-      List<Todo> events,
-      DateTime? limit});
+  $Res call({DateTime focusedDay, DateTime? selectedDay, List<Todo> events});
 }
 
 /// @nodoc
@@ -79,7 +72,6 @@ class _$CalendarCopyWithImpl<$Res> implements $CalendarCopyWith<$Res> {
     Object? focusedDay = freezed,
     Object? selectedDay = freezed,
     Object? events = freezed,
-    Object? limit = freezed,
   }) {
     return _then(_value.copyWith(
       focusedDay: focusedDay == freezed
@@ -94,10 +86,6 @@ class _$CalendarCopyWithImpl<$Res> implements $CalendarCopyWith<$Res> {
           ? _value.events
           : events // ignore: cast_nullable_to_non_nullable
               as List<Todo>,
-      limit: limit == freezed
-          ? _value.limit
-          : limit // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
     ));
   }
 }
@@ -107,11 +95,7 @@ abstract class _$CalendarCopyWith<$Res> implements $CalendarCopyWith<$Res> {
   factory _$CalendarCopyWith(_Calendar value, $Res Function(_Calendar) then) =
       __$CalendarCopyWithImpl<$Res>;
   @override
-  $Res call(
-      {DateTime focusedDay,
-      DateTime? selectedDay,
-      List<Todo> events,
-      DateTime? limit});
+  $Res call({DateTime focusedDay, DateTime? selectedDay, List<Todo> events});
 }
 
 /// @nodoc
@@ -128,7 +112,6 @@ class __$CalendarCopyWithImpl<$Res> extends _$CalendarCopyWithImpl<$Res>
     Object? focusedDay = freezed,
     Object? selectedDay = freezed,
     Object? events = freezed,
-    Object? limit = freezed,
   }) {
     return _then(_Calendar(
       focusedDay: focusedDay == freezed
@@ -143,10 +126,6 @@ class __$CalendarCopyWithImpl<$Res> extends _$CalendarCopyWithImpl<$Res>
           ? _value.events
           : events // ignore: cast_nullable_to_non_nullable
               as List<Todo>,
-      limit: limit == freezed
-          ? _value.limit
-          : limit // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
     ));
   }
 }
@@ -157,8 +136,7 @@ class _$_Calendar extends _Calendar {
   const _$_Calendar(
       {required this.focusedDay,
       this.selectedDay,
-      this.events = const <Todo>[],
-      this.limit})
+      this.events = const <Todo>[]})
       : super._();
 
   factory _$_Calendar.fromJson(Map<String, dynamic> json) =>
@@ -171,12 +149,10 @@ class _$_Calendar extends _Calendar {
   @JsonKey()
   @override
   final List<Todo> events;
-  @override
-  final DateTime? limit;
 
   @override
   String toString() {
-    return 'Calendar(focusedDay: $focusedDay, selectedDay: $selectedDay, events: $events, limit: $limit)';
+    return 'Calendar(focusedDay: $focusedDay, selectedDay: $selectedDay, events: $events)';
   }
 
   @override
@@ -188,8 +164,7 @@ class _$_Calendar extends _Calendar {
                 .equals(other.focusedDay, focusedDay) &&
             const DeepCollectionEquality()
                 .equals(other.selectedDay, selectedDay) &&
-            const DeepCollectionEquality().equals(other.events, events) &&
-            const DeepCollectionEquality().equals(other.limit, limit));
+            const DeepCollectionEquality().equals(other.events, events));
   }
 
   @override
@@ -197,8 +172,7 @@ class _$_Calendar extends _Calendar {
       runtimeType,
       const DeepCollectionEquality().hash(focusedDay),
       const DeepCollectionEquality().hash(selectedDay),
-      const DeepCollectionEquality().hash(events),
-      const DeepCollectionEquality().hash(limit));
+      const DeepCollectionEquality().hash(events));
 
   @JsonKey(ignore: true)
   @override
@@ -215,8 +189,7 @@ abstract class _Calendar extends Calendar {
   const factory _Calendar(
       {required DateTime focusedDay,
       DateTime? selectedDay,
-      List<Todo> events,
-      DateTime? limit}) = _$_Calendar;
+      List<Todo> events}) = _$_Calendar;
   const _Calendar._() : super._();
 
   factory _Calendar.fromJson(Map<String, dynamic> json) = _$_Calendar.fromJson;
@@ -227,8 +200,6 @@ abstract class _Calendar extends Calendar {
   DateTime? get selectedDay;
   @override
   List<Todo> get events;
-  @override
-  DateTime? get limit;
   @override
   @JsonKey(ignore: true)
   _$CalendarCopyWith<_Calendar> get copyWith =>

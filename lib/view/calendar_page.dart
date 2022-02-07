@@ -19,11 +19,10 @@ class CalendarScreen extends HookConsumerWidget {
 
     useEffect(() {
       WidgetsBinding.instance!.addPostFrameCallback((_) {
-        calendarAction.syncSchedules(DateTime.now()).then((err) {
-          return;
-        });
+        calendarAction.syncSchedules(DateTime.now());
       });
-    });
+      return () {};
+    }, const []);
 
     return Scaffold(
       appBar: AppBar(
@@ -64,28 +63,50 @@ class CalendarScreen extends HookConsumerWidget {
               },
             ),
           ),
-          // Expanded(
-          //   child: ListView.builder(
-          //     itemCount: calendarState.schedulesInDay()!.length,
-          //     itemBuilder: (BuildContext context, int index) {
-          //       final Todo? schedule = calendarState.schedulesInDay()![index];
-          //       return Container(
-          //         child: Flexible(
-          //           child: Text(schedule?.title ?? '',
-          //               style: ThemeData.dark().textTheme.bodyText1),
-          //         ),
-          //         decoration: BoxDecoration(
-          //           border: Border(
-          //             bottom: BorderSide(
-          //               color: ThemeData.dark().dividerColor,
-          //               width: 1.0,
-          //             ),
-          //           ),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),
+          SizedBox(
+            height: 5,
+            child: Container(
+              color: Colors.grey[300],
+            ),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Expanded(
+            child: calendarState.schedulesInDay().isEmpty
+                ? Center(child: Text('イベントはありません'))
+                : ListView.builder(
+                    itemCount: calendarState.schedulesInDay().length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final Todo? schedule =
+                          calendarState.schedulesInDay()[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                        child: Card(
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: 50,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                schedule!.title,
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Colors.grey,
+                                  width: 1.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
         ],
       ),
     );
@@ -134,7 +155,9 @@ class EventMaker {
       hashCode: _getHashCode,
     );
 
-    Map<DateTime, List<Todo>> _eventsList = {};
+    Map<DateTime, List<Todo>> _eventsList = {
+      // DateTime.now(): [Todo(title: 'test'), Todo(title: 'test2')],
+    };
     for (var schedule in schedules) {
       if (_eventsList.containsKey(schedule.date())) {
         _eventsList[schedule.date()]!.add(schedule);

@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_app_riverpod/model/calendar.dart';
 
 part 'todo.freezed.dart';
 part 'todo.g.dart';
@@ -31,10 +32,32 @@ abstract class Todo implements _$Todo {
   Map<String, dynamic> toDocument() => toJson()..remove('id');
 
   DateTime? date() {
-    return DateTime.parse(dateYMD!);
+    // return DateTime.parse(dateYMD!);
+    return limit;
   }
 
   String? dateDisplayText() {
     return DateFormat('MM月dd日', "ja_JP").format(date()!);
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      "id": id,
+      "dateYM": dateYM,
+      "dateYMD": dateYMD,
+      "title": title,
+      "isDone": isDone,
+      "limit": limit,
+    };
+  }
+
+  static Todo fromFirestore(Map<String, dynamic> data) {
+    return Todo(
+        id: data["id"],
+        dateYM: data["dateYM"],
+        dateYMD: data["dateYMD"],
+        title: data["title"],
+        limit: data["limit"],
+        isDone: data["isDone"]);
   }
 }

@@ -13,7 +13,6 @@ abstract class Calendar implements _$Calendar {
     required DateTime focusedDay,
     DateTime? selectedDay,
     @Default(<Todo>[]) List<Todo> events,
-    DateTime? limit,
   }) = _Calendar;
 
   factory Calendar.fromJson(Map<String, dynamic> json) =>
@@ -24,34 +23,33 @@ abstract class Calendar implements _$Calendar {
       'focusedDay': focusedDay,
       'selectedDay': selectedDay,
       'events': events,
-      'limit': limit,
     };
   }
 
   factory Calendar.fromFirestore(Map<String, dynamic> document) {
     return Calendar(
       selectedDay: document['selectedDay'],
-      limit: document['limit'],
       focusedDay: document['focusedDay'],
       events: document['events'],
     );
   }
 
   Calendar setSelectedDay(DateTime dt) {
-    return Calendar(
-        limit: limit, events: events, focusedDay: focusedDay, selectedDay: dt);
+    return Calendar(events: events, focusedDay: focusedDay, selectedDay: dt);
   }
 
-  Calendar? setSchedulesInMonth(List<Todo> items) {
+  Calendar setSchedulesInMonth(List<Todo> items) {
     return Calendar(
-        focusedDay: focusedDay,
-        selectedDay: selectedDay,
-        limit: limit,
-        events: items);
+      focusedDay: focusedDay,
+      selectedDay: selectedDay,
+      events: items,
+    );
   }
 
-  List<Todo>? schedulesInDay() {
-    final dateYMD = DateFormat('yyyy-MM-dd', "ja_JP").format(selectedDay!);
-    return events.where((v) => v.dateYMD == dateYMD).toList();
+  List<Todo> schedulesInDay() {
+    final limit = DateFormat('yyyy-MM-dd', "ja_JP").format(selectedDay!);
+    return events
+        .where((event) => event.limit == DateTime.parse(limit))
+        .toList();
   }
 }

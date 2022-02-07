@@ -15,9 +15,6 @@ _$_Calendar _$$_CalendarFromJson(Map<String, dynamic> json) => _$_Calendar(
               ?.map((e) => Todo.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <Todo>[],
-      limit: json['limit'] == null
-          ? null
-          : DateTime.parse(json['limit'] as String),
     );
 
 Map<String, dynamic> _$$_CalendarToJson(_$_Calendar instance) =>
@@ -25,5 +22,4 @@ Map<String, dynamic> _$$_CalendarToJson(_$_Calendar instance) =>
       'focusedDay': instance.focusedDay.toIso8601String(),
       'selectedDay': instance.selectedDay?.toIso8601String(),
       'events': instance.events,
-      'limit': instance.limit?.toIso8601String(),
     };

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:todo_app_riverpod/model/todo.dart';
 
 final todoLimitProvider =
@@ -7,7 +8,7 @@ final todoLimitProvider =
         (ref) => TodoController());
 
 class TodoController extends StateNotifier<Todo> {
-  TodoController() : super(const Todo(limit: null, title: 'タイトルなし'));
+  TodoController() : super(const Todo(title: 'タイトルなし'));
 
   Future<void> selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(

@@ -83,24 +83,44 @@ class CalendarScreen extends HookConsumerWidget {
                       return Padding(
                         padding: const EdgeInsets.only(left: 5.0, right: 5.0),
                         child: Card(
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            height: 50,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Text(
-                                schedule!.title,
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.grey,
-                                  width: 1.0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                height: 50,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 15.0),
+                                  child: Text(
+                                    schedule!.title,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
                                 ),
                               ),
-                            ),
+                              schedule.isDone == true
+                                  ? Container(
+                                      child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.check_circle,
+                                          color: Colors.greenAccent,
+                                        ),
+                                        SizedBox(
+                                          width: 8,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 15.0),
+                                          child: Text(
+                                            '達成済み',
+                                            style: TextStyle(
+                                                color: Colors.greenAccent),
+                                          ),
+                                        ),
+                                      ],
+                                    ))
+                                  : SizedBox()
+                            ],
                           ),
                         ),
                       );

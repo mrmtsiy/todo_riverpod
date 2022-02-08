@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+
 import 'package:todo_app_riverpod/repositories/auth_repository.dart';
 import 'package:todo_app_riverpod/view/signin_page.dart';
 import 'package:todo_app_riverpod/view/signup_page.dart';
@@ -333,10 +334,13 @@ class AddTodoDialog extends HookConsumerWidget {
                 style: ElevatedButton.styleFrom(
                     primary: Theme.of(context).primaryColor),
                 onPressed: () {
+                  final now =
+                      DateFormat('yyyy-MM-dd', "ja_JP").format(DateTime.now());
+
                   if (textController.text.isNotEmpty) {
                     ref.read(todoListProvider.notifier).createTodo(
                         title: textController.text.trim(),
-                        limit: limitTime.limit);
+                        limit: limitTime.limit ?? DateTime.parse(now));
                     Navigator.of(context).pop();
                   } else {
                     Navigator.of(context).pop();

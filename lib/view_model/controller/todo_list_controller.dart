@@ -14,14 +14,14 @@ enum TodoListFilter {
 final todoListFilterProvider =
     StateProvider<TodoListFilter>((_) => TodoListFilter.all);
 
-final filteredTodoListProvider = Provider<List<Todo>>((ref) {
+final filteredTodoListProvider = Provider.autoDispose<List<Todo>>((ref) {
   final todoListFilterState = ref.watch(todoListFilterProvider);
   final todoListState = ref.watch(todoListProvider);
   return todoListState.maybeWhen(
     data: (todos) {
       switch (todoListFilterState) {
         case TodoListFilter.isDone:
-          return todos.where((todo) => todo.isDone).toList();
+          return todos.where((todo) => !todo.isDone).toList();
         default:
           return todos;
       }
@@ -30,8 +30,8 @@ final filteredTodoListProvider = Provider<List<Todo>>((ref) {
   );
 });
 
-final todoListProvider =
-    StateNotifierProvider<TodoListController, AsyncValue<List<Todo>>>(
+final todoListProvider = StateNotifierProvider.autoDispose<TodoListController,
+    AsyncValue<List<Todo>>>(
   (ref) {
     final user = ref.watch(firebaseAuthProvider).currentUser;
     return TodoListController(ref.read, user?.uid);

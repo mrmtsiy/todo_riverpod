@@ -21,6 +21,7 @@ class SignInPage extends HookConsumerWidget {
     final TextEditingController passwordController = useTextEditingController();
     final loadingNotifier = ref.watch(loadingProvider.notifier);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: bgColor,
       appBar: AppBar(
         title: Text('ログイン'),
@@ -142,7 +143,7 @@ class SignInPage extends HookConsumerWidget {
                     Container(
                       height: 64,
                       width: double.infinity,
-                      margin: EdgeInsets.only(top: 50),
+                      margin: EdgeInsets.only(top: 20),
                       child: TextButton(
                         onPressed: () async {
                           loadingNotifier.startLoading();
@@ -194,8 +195,8 @@ class SignInPage extends HookConsumerWidget {
                     ),
                     Container(
                       margin: EdgeInsets.only(
-                        top: 30,
-                        bottom: 74,
+                        top: 10,
+                        bottom: 24,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

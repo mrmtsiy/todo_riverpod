@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todo_app_riverpod/model/calendar.dart';
 import 'package:todo_app_riverpod/model/todo.dart';
@@ -37,7 +36,7 @@ class CalendarController extends StateNotifier<Calendar> {
   }
 
   Future<AppError?> syncSchedules(DateTime dt) async {
-    final dateYM = DateFormat('yyyy-MM-D', "ja_JP").format(dt);
+    // final dateYM = DateFormat('yyyy-MM-D', "ja_JP").format(dt);
     final loginId = _read(firebaseAuthProvider).currentUser!.uid;
 
     state = state.setSchedulesInMonth([]);

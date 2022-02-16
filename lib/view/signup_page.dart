@@ -23,6 +23,7 @@ class SignUpPage extends HookConsumerWidget {
     final loadingNotifier = ref.watch(loadingProvider.notifier);
     final authError = Authentication_error();
     String _infoText = "";
+    // ignore: unused_local_variable
     String _registerPassword = '';
     // ignore: non_constant_identifier_names
     bool _pswd_OK = false;

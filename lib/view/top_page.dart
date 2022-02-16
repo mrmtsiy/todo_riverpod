@@ -65,7 +65,7 @@ Widget _drawerList(context, WidgetRef ref) {
     children: <Widget>[
       DrawerHeader(
         child: Text(
-          authControllerState!.displayName ?? authControllerState.uid,
+          authControllerState!.displayName ?? 'ゲスト様',
           style: TextStyle(
             fontSize: 24,
           ),
@@ -312,7 +312,7 @@ class AddTodoDialog extends HookConsumerWidget {
             Row(
               children: [
                 SizedBox(
-                  width: 200,
+                  width: 180,
                   child: limitTime.limit != null
                       ? Text(DateFormat('yyyy年MM月dd日').format(limitTime.limit!))
                       : Text(
